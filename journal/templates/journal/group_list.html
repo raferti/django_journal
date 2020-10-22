@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Список классов{% endblock %}
+
+{% block content %}
+    <h1>Список журналов по учебным классам</h1>
+    <table class="table-journal">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Класс</th>
+                <th>Руководитель</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users_teachers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{{ user.teacher.group_manager.get_absolute_url }}">
+                            {{ user.teacher.group_manager.grade }}
+                        </a>
+                    </td>
+                    <td><a href="{{ user.teacher.get_absolute_url }}">{{ user.get_full_name }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

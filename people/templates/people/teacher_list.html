@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Список учителей{% endblock %}
+
+{% block content %}
+    <h1>Школьные учителя</h1>
+    <table class="table-journal">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Фото</th>
+                <th>ФИО</th>
+                <th>Должность</th>
+                <th>Классный руководитель</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in user_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><img class="user-avatar-mini" src="{{ user.photo.url }}" alt=""></td>
+                    <td>
+                        <a href="{{ user.teacher.get_absolute_url }}">
+                            {{ user.get_full_name }}
+                        </a>
+                    </td>
+                    <td>{{ user.teacher.position }}</td>
+                    <td>
+                        <a href="{{ user.teacher.group_manager.get_absolute_url }}">{{ user.teacher.group_manager.grade }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

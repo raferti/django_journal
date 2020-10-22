@@ -1,0 +1,11 @@
+<h3>Контактная информация</h3>
+
+{% if user.contact.phone1 %}
+    <p><b>Телефон:</b> {{ user.contact.phone1 }}</p>
+{% elif user.contact.phone2 %}
+    <p><b>Телефон:</b> {{ user.contact.phone2 }}</p>
+ {% elif user.contact.phone3 %}
+    <p><b>Телефон:</b> {{ user.contact.phone3 }}</p>
+{% elif user.contact.email %}
+    <p><b>Email:</b> {{ user.contact.email }}</p>
+{% endif %}

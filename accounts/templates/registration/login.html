@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block sidebar %}
+    <div style="background-color: #eff3f6"></div>
+{% endblock %}
+
+{% block content %}
+
+        <div class="content account">
+            <div class="login-form">
+                <h3>Авторизация:</h3>
+                {% if form.errors %}
+                    <p>Что то пошло не так.</p>
+                {% endif %}
+
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    <button type="submit">Вход</button>
+                    <p><a class="forgot" href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+                </form>
+
+            </div>
+        </div>
+
+{% endblock %}

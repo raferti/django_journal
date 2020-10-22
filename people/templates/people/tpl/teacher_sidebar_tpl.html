@@ -1,0 +1,17 @@
+{% block sidebar %}
+    <h3>Личный кабинет</h3>
+    <img class="user-avatar" src="{{ user.photo.url }}" alt="{{ user.first_name }} {{ user.last_name }}">
+    <p><b>{{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</b></p>
+    <hr>
+    <ul>
+        <li><a href="{% url 'group_student_list' %}">Журналы по учебным классам</a></li>
+        <li><a href="{% url 'teacher_list' %}">Школьные учителя</a></li>
+        <li><a href="{% url 'mailing_list' %}">Рассылки</a></li>
+    </ul>
+    <hr>
+    <p><b>Настройки:</b></p>
+    <ul>
+        <li><a href="{% url 'password_change' %}">Изменить пароль</a></li>
+        <li><a href="{% url 'logout' %}">Выйти</a></li>
+    </ul>
+{% endblock %}

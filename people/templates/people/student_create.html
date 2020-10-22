@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Новый ученик{% endblock %}
+
+{% block content %}
+    <h1>Новый ученик</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="create-form">
+            {% csrf_token %}
+            <div id="left-side">
+                <p>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </p>
+
+                <p>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </p>
+
+                <p>
+                    {{ form.password }}
+                    {{ form.password.errors }}
+                </p>
+
+                <p>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </p>
+                <p>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </p>
+
+                <p>
+                    {{ form.middle_name }}
+                    {{ form.middle_name.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.birth_date.id_for_label }}">Дата рождения:</label> <br>
+                    {{ form.birth_date }}
+                    {{ form.birth_date.errors }}
+                </p>
+
+                 <p>
+                    <label for="{{ form.sex.id_for_label }}">Пол:</label> <br>
+                    {{ form.sex }}
+                    {{ form.sex.errors }}
+                </p>
+            </div>
+
+            <div id="right-side">
+                <p>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </p>
+                <p style="color: #606479; font-size: 14px">Фотография ученика:</p>
+                <p>
+                    <label class="label-file" for="{{ form.photo.id_for_label }}">Загрузить фото</label> <br>
+                    <input type="file" name="photo" class="input-file" accept="image/*" id="id_photo"
+                           onchange="document.getElementById('upload-file-info').innerText = this.value;">
+                    <br>
+                    <span class='label-info' id="upload-file-info"></span>
+                    {{ form.photo.errors }}
+                </p>
+                <p>
+                    <label for="{{ student_form.group.id_for_label }}">Ученик класса:</label> <br>
+                    {{ student_form.group }}
+                    {{ student_form.group.errors }}
+                </p>
+                <p>
+                    {{ contact_form.phone1 }}
+                    {{ contact_form.phone1.errors }}
+                </p>
+                <p>
+                    {{ contact_form.phone2 }}
+                    {{ contact_form.phone2.errors }}
+                </p>
+                <p>
+                    {{ contact_form.phone3 }}
+                    {{ contact_form.phone3.errors }}
+                </p>
+            </div>
+
+            <div id="contact">
+                <input type="submit" class="save_button" value="Сохранить">
+            </div>
+
+        </div>
+    </form>
+{% endblock %}

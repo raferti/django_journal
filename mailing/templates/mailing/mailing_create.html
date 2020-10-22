@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Создать рассылку{% endblock %}
+
+{% block content %}
+
+    <h1>Создать рассылку</h1>
+    <p>Рассылка помогает сообщить родителям или ученикам о предстоящих событиях
+        (школьных собраниях, мероприятиях, акциях, проишествиях).<br>
+        Рассылка отправляется на указанные контакты в профиле учащегося.</p>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <p>{{ form.name }}</p>
+        <p>{{ form.subject }}</p>
+        <p>{{ form.message }}</p>
+
+    <h3>Выберите получателей рассылки:</h3>
+        <table class="table-journal">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Фото</th>
+                <th>ФИО</th>
+                <th>Дата рождения</th>
+                <th>Характеристика</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                        <input id="id_to_users_{{ student.id }}" type="checkbox" name="to_users" value="{{ student.id }}">
+                    </td>
+                    <td>
+                        <a href="{{ student.student.get_absolute_url }}">
+                            <img class="user-avatar-mini" src="{{ student.photo.url }}" alt="{{ student.get_full_name }}">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ student.student.get_absolute_url }}">
+                            {{ student.get_full_name }}
+                        </a>
+                    </td>
+                    <td>{{ student.birth_date|date:'d.m.Y' }}</td>
+                    <td>{{ student.description }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <input class="btn btn-success" type="submit" value="Сохранить и отправить">
+    </form>
+
+{% endblock %}

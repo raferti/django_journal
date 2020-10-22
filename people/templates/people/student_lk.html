@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %} Личный кабинет {% endblock %}
+
+{% block content %}
+    <h1>Оценки</h1>
+    <form action="{% url 'student_lk' %}" method="get">
+        <label> С
+            <input class="input-date" name="start-date" type="date" value="{{ date_period|first|date:"Y-m-d" }}" >
+        </label>
+
+        <label> по
+            <input class="input-date" name="end-date" type="date" value="{{ date_period|last|date:"Y-m-d" }}">
+        </label>
+        <button class="btn-filter btn-filter-purple" type="submit">Применить</button>
+    </form>
+    <p></p>
+
+    <table class="table-journal">
+        <thead>
+            <tr>
+                <th>Предметы</th>
+                 {% for date in date_period %}
+                     <th>{{ date|date:"d.m.Y" }}</th>
+                 {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.name }}</td>
+                {% for date in date_period %}
+                    {% with score_id_tuple=scores_dict|get_dict_value:date|get_dict_value:lesson.id %}
+                        <td>
+                            {% if score_id_tuple|get_list_value:0 == 0 %}
+                                <span data-scoreid="{{ score_id_tuple|get_list_value:1 }}">--</span>
+                            {% else %}
+                                <span data-scoreid="{{ score_id_tuple|get_list_value:1 }}">
+                                    {{ score_id_tuple|get_list_value:0 }}
+                                </span>
+                            {% endif %}
+
+                        </td>
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p></p>
+    {% include "people/include/people_rating_bar.html" %}
+    {% include "people/include/people_contact_info.html" %}
+
+{% endblock %}

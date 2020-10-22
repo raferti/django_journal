@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load filters %}
+
+{% block title %}Журнал класс {{ group.grade }} {% endblock %}
+
+{% block content %}
+    <h1>Классный журнал - {{ group.grade }} - {{ lesson }}</h1>
+
+    <form action="{% url 'score_lesson' group.id lesson.id %}" method="get">
+        <label> С
+            <input class="input-date" name="start-date" type="date" value="{{ date_period|first|date:"Y-m-d" }}" >
+        </label>
+        <label> по
+            <input class="input-date" name="end-date" type="date" value="{{ date_period|last|date:"Y-m-d" }}">
+        </label>
+        <button class="btn-filter btn-filter-purple" type="submit">Применить</button>
+    </form>
+
+    <p></p>
+    <table id="testTable" class="table-journal">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                 {% for date in date_period %}
+                     <th>{{ date|date:"d.m.Y" }}</th>
+                 {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td><a href="{{ student.student.get_absolute_url }}">{{ student.get_full_name }}</a></td>
+                {% for date in date_period %}
+                    {% with score_id_tuple=scores_dict|get_dict_value:date|get_dict_value:student.id %}
+                        <td>
+
+                            {% if score_id_tuple|get_list_value:0 == 0 %}
+                                <a ondblclick="showSelectBox()" href="#"
+                                   data-student="{{ student.id }}"
+                                   data-scoredate="{{ date|date:"Y-m-d" }}"
+                                   data-scoreid="{{ score_id_tuple|get_list_value:1 }}">--</a>
+                            {% else %}
+                                <a ondblclick="showSelectBox()" href="#"
+                                   data-student="{{ student.id }}"
+                                   data-scoredate="{{ date|date:"Y-m-d" }}"
+                                   data-scoreid="{{ score_id_tuple|get_list_value:1 }}">{{ score_id_tuple|get_list_value:0 }}</a>
+                            {% endif %}
+
+                        </td>
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+    </tbody>
+    </table>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        function sendScore(scoreParams, targetLink) {
+            const request = new XMLHttpRequest();
+            const url = "{% url 'add_score' %}";
+            const csrftoken = getCookie("csrftoken");
+            let params = '' + Object.keys(scoreParams).map(function(key) {
+                return encodeURIComponent(key) + '='
+                    + encodeURIComponent(scoreParams[key]);
+            }).join('&');
+
+            request.open("POST", url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.addEventListener("readystatechange", () => {
+                if(request.readyState === 4 && request.status === 200) {
+                    targetLink.text = scoreParams["score_value"]
+                }
+            });
+            request.send(params);
+        }
+
+
+        function getScoreParams(targetLink) {
+            return {
+                group: {{ group.id }},
+                lesson: {{ lesson.id }}, //scores.first.lesson.id
+                teacher: {{ user.teacher.id }},
+                student: targetLink.dataset.student,
+                score_status: 1,
+                score_id: targetLink.dataset.scoreid,
+                score_value: targetLink.innerHTML,
+                score_date: targetLink.dataset.scoredate,
+            }
+        }
+
+
+        function showLink(e, targetLink, scoreParams) {
+            if (e.which === 13) {
+                let targetSelectBox = e.target;
+                scoreParams["score_value"] = targetSelectBox.value;
+                targetSelectBox.parentNode.replaceChild(targetLink, targetSelectBox);
+                sendScore(scoreParams, targetLink);
+            }
+        }
+
+
+        function showSelectBox()
+        {
+            const selectBoxOptions = {" ": "", " 2": "2", " 3": "3", " 4": "4", " 5": "5",}
+            let selectBox = document.createElement("select");
+            let targetLink = event.target;
+            let scoreParams = getScoreParams(targetLink);
+
+            for (let key in selectBoxOptions) {
+                selectBox.options.add(new Option(key, selectBoxOptions[key]));
+            }
+            selectBox.selectedIndex = scoreParams["score_value"]-1;
+            selectBox.onkeypress = function() {showLink(event, targetLink, scoreParams);}
+            targetLink.parentNode.replaceChild(selectBox, targetLink);
+        }
+    </script>
+{% endblock %}

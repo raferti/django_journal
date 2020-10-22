@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактировать ученика{% endblock %}
+
+{% block content %}
+    <h1>Редактировать ученика</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+     <form action="" method="post" enctype="multipart/form-data">
+        <div class="create-form">
+            {% csrf_token %}
+
+            <div id="left-side">
+
+               <p>
+                    <label for="{{ form.first_name.id_for_label }}">Имя:</label> <br>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.last_name.id_for_label }}">Фамилия:</label> <br>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </p>
+
+                <p>
+                    <label for="{{ form.middle_name.id_for_label }}">Отчество:</label> <br>
+                    {{ form.middle_name }}
+                    {{ form.middle_name.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.birth_date.id_for_label }}">Дата рождения:</label> <br>
+                    {{ form.birth_date }}
+                    {{ form.birth_date.errors }}
+                </p>
+
+                 <p>
+                    <label for="{{ form.sex.id_for_label }}">Пол:</label> <br>
+                    {{ form.sex }}
+                    {{ form.sex.errors }}
+                </p>
+
+                {{ student_form.management_form }}
+                {{ student_form.as_p }}
+            </div>
+
+            <div id="right-side">
+                <p>
+                    <label for="{{ form.description.id_for_label }}">Характеристика:</label> <br>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </p>
+
+                <p style="color: #606479; font-size: 14px">Фотография ученика:</p>
+                <p>
+                    <img id="avatar" align="left" class="user-avatar-mini" src="/media/{{ form.photo.value }}" alt="">
+                    <label class="label-file" for="{{ form.photo.id_for_label }}">Загрузить фото</label> <br>
+                    <input type="file" name="photo" class="input-file" accept="image/*" id="id_photo"
+                           onchange="document.getElementById('upload-file-info').innerText = this.value;
+                           document.getElementById('avatar').src = '';">
+                    <br>
+                    <span class='label-info' id="upload-file-info">Текущее фото: {{ form.photo.value }}</span>
+                    {{ form.photo.errors }}
+                </p>
+
+                {{ contact_form.as_p }}
+            </div>
+
+            <div id="contact">
+                <input type="submit" class="save_button" value="Сохранить">
+            </div>
+
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Список рассылок{% endblock %}
+
+{% block content %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h1>Список рассылок</h1>
+    <p><a class="btn btn-success" href="{% url 'mailing_create' %}">Создать новую рассылку</a></p>
+    <table class="table-journal">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Заголовок</th>
+            <th>Дата создания</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for mailing in mailings %}
+            <tr>
+                <td>
+                    {{ forloop.counter }}
+                </td>
+                <td>
+                    <p><a href="{{ mailing.get_absolute_url }}">{{ mailing.name }}</a></p>
+                </td>
+                <td>
+                    <p>{{ mailing.subject }}</p>
+                </td>
+                <td><p>{{ mailing.created }}</p></td>
+            </tr>
+        {% empty %}
+            <p>Нет ни одной рассылки</p>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+<div class="profile-statistic">
+    <div class="reviews-container">
+        <h2>Статистика оценок</h2>
+
+        {% for score, count_score in rating.items %}
+            <div class="review">
+                <span class="icon-container">{{ score }} *<i class="fas fa-star"></i></span>
+                <div class="progress">
+                    <div class="progress-done progress-done-color-{{ forloop.counter }}" data-done="{{ count_score }}"></div>
+                </div>
+                <span class="score-count">{{ count_score }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex-wrapper reviews-container">
+        <h2>Мой рейтинг</h2>
+        <div class="single-chart">
+            <svg viewBox="0 0 36 36" class="circular-chart orange">
+                <defs>
+                    <linearGradient id="gradient">
+                        <stop offset="0" stop-color="#954ce9" />
+                        <stop offset="0.3" stop-color="#954ce9" />
+                        <stop offset="0.6" stop-color="#24c1ed" />
+                        <stop offset="1" stop-color="#24c1ed" />
+                    </linearGradient>
+                </defs>
+
+                <path class="circle-bg"
+                      d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path class="circle"
+                      stroke-dasharray="{{ total_scores.sum_score_percent|floatformat }}, 100"
+                      d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <text x="18" y="20.35" class="percentage">{{ total_scores.sum_score|floatformat }}</text>
+            </svg>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    const progressDone = document.querySelectorAll('.progress-done');
+    const scoreCount = document.querySelectorAll('.score-count');
+
+    function getPercent(value, count) {
+        return Math.floor(parseInt(value) / count * 100)
+    }
+
+    progressDone.forEach(progress => {
+        let data_done = progress.getAttribute('data-done')
+        progress.setAttribute('data-done', getPercent(data_done, {{ total_scores.sum_count|default:1 }}))
+        progress.style.width = progress.getAttribute('data-done') + '%';
+    });
+
+    scoreCount.forEach(score => {
+        let value = score.innerHTML
+        score.innerHTML = value + ' (' + getPercent(value, {{ total_scores.sum_count|default:1 }}) +')%'
+    })
+</script>

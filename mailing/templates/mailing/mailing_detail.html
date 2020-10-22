@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Рассылка: {{ mailing.name }}{% endblock %}
+
+{% block content %}
+
+    <h1>Информация о рассылке</h1>
+    <p><b>Имя: </b>{{ mailing.name }}</p>
+
+    <p><b>Заголовок: </b>{{ mailing.subject }}</p>
+    <p><b>Текст сообщения: </b></p>
+    <p>{{ mailing.message }}</p>
+    <hr>
+    <h3>Получатели:</h3>
+    {% for user in mailing.to_users.all %}
+        <ul>
+            <li><a href="{{ user.student.get_absolute_url }}">{{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</a></li>
+        </ul>
+    {% endfor %}
+    <p class="small-font">Дата отправления: {{ mailing.created }}</p>
+
+{% endblock %}
